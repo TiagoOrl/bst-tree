@@ -1,8 +1,10 @@
 #ifndef H_BST_DEF
 #define H_BST_DEF
 
+#include <stdbool.h>
+
 struct _node {
-    char hash[80];
+    int key;
     void * data;
     int size;
     int height;
@@ -23,8 +25,8 @@ typedef struct _bst bst;
 
 
 bst bst_new();
-void bst_insert(bst *bst, void *data, int nmemb, int nbytes);
-int bst_contains(bst *bst, void *data);
+void bst_insert(bst *bst, int key, void *data, int nmemb, int nbytes);
+bool bst_contains(bst *bst, int key);
 
 
 #endif

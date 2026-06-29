@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-static node* create_node(void* data, int nmemb, int nbytes) {
+static node* create_node(int key, void* data, int nmemb, int nbytes) {
     node* new_node = (node*) calloc(1, sizeof(node));
-    new_node->size = nmemb;
+    new_node->size = nmemb * nbytes;
+    new_node->key = key;
     new_node->left = NULL;
     new_node->right = NULL;
     new_node->data = calloc(nmemb, nbytes);
@@ -27,9 +28,27 @@ bst bst_new() {
 }
 
 
-void bst_insert(bst *bst, void *data, int nmemb, int nbytes) {
+bool bst_contains(bst *bst, int key) {
+    node* it = bst->root;
 
-    node* new_node = create_node(data, nmemb, nbytes);
+    while (it != NULL) {
+        if (it->key == key)
+            return true;
+        
+        if (key < it->key)
+            it = it->left;
+
+        else 
+            it = it->right;
+    }
+
+    return false;
+}
+
+
+void bst_insert(bst *bst, int key, void *data, int nmemb, int nbytes) {
+
+    node* new_node = create_node(key, data, nmemb, nbytes);
     node* it = bst->root;
     node* to_insert = NULL;
 
@@ -41,14 +60,14 @@ void bst_insert(bst *bst, void *data, int nmemb, int nbytes) {
     while (it != NULL) {
         to_insert = it;
 
-        if (nmemb <= it->size)
+        if (key < it->key)
             it = it->left;
         
         else
             it = it->right;
     }
 
-    if (nmemb <= to_insert->size)
+    if (key < to_insert->key)
         to_insert->left = new_node;
 
     else
