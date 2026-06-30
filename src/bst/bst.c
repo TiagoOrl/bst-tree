@@ -4,6 +4,10 @@
 
 static node* create_node(int key, void* data, int nmemb, int nbytes) {
     node* new_node = (node*) calloc(1, sizeof(node));
+    
+    if (new_node == NULL)
+        return NULL;
+
     new_node->size = nmemb * nbytes;
     new_node->key = key;
     new_node->left = NULL;
@@ -20,7 +24,10 @@ node* find_parent(bst* bst, int key) {
     node *it = bst->root;
 
     while (it != NULL) {
-        if (it->left->key == key || it->right->key == key)
+        if (it->left != NULL && it->left->key == key)
+            return it;
+        
+        if (it->right != NULL && it->right->key == key)
             return it;
         
         if (key < it->key)
@@ -96,6 +103,9 @@ void bst_insert(bst *bst, int key, void *data, int nmemb, int nbytes) {
 
     while (it != NULL) {
         to_insert = it;
+
+        if (key == it->key)
+            return;
 
         if (key < it->key)
             it = it->left;
