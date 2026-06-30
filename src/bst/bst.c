@@ -16,6 +16,23 @@ static node* create_node(int key, void* data, int nmemb, int nbytes) {
 }
 
 
+static node* find_node(bst* bst, int key) {
+    node *it = bst->root;
+    while (it != NULL) {
+        if (it->key == key)
+            return it;
+        
+        if (key < it->key)
+            it = it->left;
+
+        else 
+            it = it->right;
+    }
+
+    return NULL;
+}
+
+
 bst bst_new() {
     bst bst = {
         .min = 0,
@@ -31,18 +48,15 @@ bst bst_new() {
 bool bst_contains(bst *bst, int key) {
     node* it = bst->root;
 
-    while (it != NULL) {
-        if (it->key == key)
-            return true;
-        
-        if (key < it->key)
-            it = it->left;
-
-        else 
-            it = it->right;
-    }
+    if (find_node(bst, key) != NULL)
+        return true;
 
     return false;
+}
+
+
+bool bst_remove(bst* bst, int key) {
+
 }
 
 
