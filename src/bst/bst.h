@@ -25,6 +25,7 @@ typedef struct _bst bst;
 
 
 bst bst_new();
+node* find_parent(bst* bst, int key);
 void bst_insert(bst *bst, int key, void *data, int nmemb, int nbytes);
 bool bst_remove(bst* bst, int key);
 bool bst_contains(bst *bst, int key);

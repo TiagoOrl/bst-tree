@@ -16,6 +16,24 @@ static node* create_node(int key, void* data, int nmemb, int nbytes) {
 }
 
 
+node* find_parent(bst* bst, int key) {
+    node *it = bst->root;
+
+    while (it != NULL) {
+        if (it->left->key == key || it->right->key == key)
+            return it;
+        
+        if (key < it->key)
+            it = it->left;
+
+        else 
+            it = it->right;
+    }
+
+    return NULL;
+}
+
+
 static node* find_node(bst* bst, int key) {
     node *it = bst->root;
     while (it != NULL) {
@@ -56,7 +74,12 @@ bool bst_contains(bst *bst, int key) {
 
 
 bool bst_remove(bst* bst, int key) {
+    node* found = find_node(bst, key);
 
+    if (found == NULL)
+        return false;
+    
+    
 }
 
 
