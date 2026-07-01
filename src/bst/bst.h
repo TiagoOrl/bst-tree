@@ -10,6 +10,7 @@ struct _node {
     int height;
     struct _node *left;
     struct _node *right;
+    struct _node *parent;
 };
 
 typedef struct _node node;
@@ -25,7 +26,6 @@ typedef struct _bst bst;
 
 
 bst bst_new();
-node* find_parent(bst* bst, int key);
 void bst_insert(bst *bst, int key, void *data, int nmemb, int nbytes);
 bool bst_remove(bst* bst, int key);
 bool bst_contains(bst *bst, int key);

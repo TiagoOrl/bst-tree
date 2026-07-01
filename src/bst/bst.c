@@ -12,6 +12,7 @@ static node* create_node(int key, void* data, int nmemb, int nbytes) {
     new_node->key = key;
     new_node->left = NULL;
     new_node->right = NULL;
+    new_node->parent = NULL;
     new_node->data = calloc(nmemb, nbytes);
 
     memcpy(new_node->data, data, nmemb * nbytes);
@@ -20,24 +21,9 @@ static node* create_node(int key, void* data, int nmemb, int nbytes) {
 }
 
 
-node* find_parent(bst* bst, int key) {
-    node *it = bst->root;
-
-    while (it != NULL) {
-        if (it->left != NULL && it->left->key == key)
-            return it;
-        
-        if (it->right != NULL && it->right->key == key)
-            return it;
-        
-        if (key < it->key)
-            it = it->left;
-
-        else 
-            it = it->right;
-    }
-
-    return NULL;
+static void free_node(node* node) {
+    free(node->data);
+    free(node);
 }
 
 
@@ -82,11 +68,26 @@ bool bst_contains(bst *bst, int key) {
 
 bool bst_remove(bst* bst, int key) {
     node* found = find_node(bst, key);
-
+    
     if (found == NULL)
         return false;
-    
-    
+
+    // only one node in tree
+    if (found->parent == NULL)
+    {
+        free_node(found);
+        bst->root = NULL;
+        bst->size = 0;
+
+        return true;
+    }
+
+
+    // leaf node
+    if (found->left == NULL && found->right == NULL) {
+        node* parent_found = found->parent;
+        
+    }
 }
 
 
@@ -94,7 +95,7 @@ void bst_insert(bst *bst, int key, void *data, int nmemb, int nbytes) {
 
     node* new_node = create_node(key, data, nmemb, nbytes);
     node* it = bst->root;
-    node* to_insert = NULL;
+    node* parent = NULL;    // the parent of the new node to be inserted
 
     if (bst->root == NULL) {
         bst->root = new_node;
@@ -102,7 +103,7 @@ void bst_insert(bst *bst, int key, void *data, int nmemb, int nbytes) {
     }
 
     while (it != NULL) {
-        to_insert = it;
+        parent = it;
 
         if (key == it->key)
             return;
@@ -114,11 +115,13 @@ void bst_insert(bst *bst, int key, void *data, int nmemb, int nbytes) {
             it = it->right;
     }
 
-    if (key < to_insert->key)
-        to_insert->left = new_node;
+    if (key < parent->key)
+        parent->left = new_node;
 
     else
-        to_insert->right = new_node;
+        parent->right = new_node;
+
+    new_node->parent = parent;
 
     bst->size++;
 }
