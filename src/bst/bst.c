@@ -75,10 +75,9 @@ bool bst_remove(bst* bst, int key) {
     // only one node in tree
     if (found->parent == NULL)
     {
-        free_node(found);
         bst->root = NULL;
         bst->size = 0;
-
+        free_node(found);
         return true;
     }
 
@@ -86,8 +85,19 @@ bool bst_remove(bst* bst, int key) {
     // leaf node
     if (found->left == NULL && found->right == NULL) {
         node* parent_found = found->parent;
-        
+
+        if (parent_found->left == found)
+            parent_found->left = NULL;
+
+        if (parent_found->right == found)
+            parent_found->right = NULL;
+
+        free_node(found);
+        return true;
     }
+
+    // one child
+    
 }
 
 
