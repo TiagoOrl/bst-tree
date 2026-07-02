@@ -77,27 +77,56 @@ bool bst_remove(bst* bst, int key) {
     {
         bst->root = NULL;
         bst->size = 0;
-        free_node(found);
-        return true;
+        goto ok;
     }
+
+    node* found_parent = found->parent;
 
 
     // leaf node
     if (found->left == NULL && found->right == NULL) {
-        node* parent_found = found->parent;
 
-        if (parent_found->left == found)
-            parent_found->left = NULL;
+        // if leaf node is on left side
+        if (found_parent->left == found)
+            found_parent->left = NULL;
 
-        if (parent_found->right == found)
-            parent_found->right = NULL;
+        // if leaf node is on right side
+        if (found_parent->right == found)
+            found_parent->right = NULL;
 
-        free_node(found);
-        return true;
+        goto ok;
     }
 
-    // one child
-    
+    // one child - left
+    if (found->left != NULL && found->right == NULL) {
+        if (found_parent->left == found)
+            found_parent->left = found->left;
+
+        if (found_parent->right == found)
+            found_parent->right = found->left;
+        
+        // update found child parent
+        found->left->parent = found_parent;
+        goto ok;
+    }   
+
+    // one child - right
+    if (found->right != NULL && found->left == NULL) {
+        if (found_parent->left == found)
+            found_parent->left = found->right;
+
+        if (found_parent->right == found)
+            found_parent->right = found->right;
+
+        
+        // update found child parent
+        found->right->parent = found_parent;
+        goto ok;
+    }
+
+ok:
+    free_node(found);
+    return true;
 }
 
 
